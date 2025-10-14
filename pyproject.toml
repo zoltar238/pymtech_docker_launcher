@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pymtech-docker-launcher"
+version = "0.1.1"
+description = "Odoo deploy command line tool"
+requires-python = ">=3.10.12"
+dependencies = [
+    "oci-cli>=3.68.0",
+    "playwright>=1.55.0",
+    "psutil>=7.1.0",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.5",
+    "typer>=0.19.2",
+]
+
+# 👇 actualiza el entry point para apuntar al nuevo paquete
+[project.scripts]
+pymtech-docker-launcher = "odoo_docker_launcher.deploy:deploy"
+
+# 👇 dile a hatchling dónde están los paquetes
+[tool.hatch.build.targets.wheel]
+packages = ["odoo_docker_launcher"]
