@@ -8,12 +8,12 @@ from odoo_docker_launcher.services.config_manager import set_config
 from odoo_docker_launcher.services.constants import Constants
 from odoo_docker_launcher.services.containers import stop_running_containers, build_docker_images, launch_database_only, \
     get_database_names, launch_containers
+from odoo_docker_launcher.services.custom_logger import CustomLogger
 from odoo_docker_launcher.services.database_creator import check_service_health, create_database
 from odoo_docker_launcher.services.env_validator import env_verify
 from odoo_docker_launcher.services.file_operations import copy_requirements, list_updated_addons, update_addons_cache
 from odoo_docker_launcher.services.module_manager import list_addons_in_folder, list_to_install_addons
 from odoo_docker_launcher.services.traefik import configure_traefik
-from .services.custom_logger import CustomLogger
 
 app = typer.Typer(add_completion=False,
                   help="Odoo Deploy command line tool, run without arguments nor commands to start the deployment process")
@@ -42,7 +42,7 @@ async def async_main():
     configure_traefik(constants)
 
     # Build images if necessary
-    build_docker_images(constants)
+    # build_docker_images(constants)
 
     if constants.AUTO_INSTALL_MODULES == 'true' or constants.AUTO_UPDATE_MODULES == 'true':
         constants.logger.print_header("UPDATING DATABASES AND INSTALLING MODULES")

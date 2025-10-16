@@ -9,7 +9,6 @@ from odoo_docker_launcher.services.custom_logger import CustomLogger
 
 @dataclass
 class Constants:
-    VERSION: Optional[str]
     TRAEFIK_VERSION: Optional[str]
     COMPOSE_PROJECT_NAME: Optional[str]
     DEPLOYMENT_TARGET: str
@@ -42,7 +41,6 @@ class Constants:
     def from_env(cls, project_base_dir: str) -> 'Constants':
         load_dotenv(f"{project_base_dir}/.env")
         return cls(
-            VERSION=os.getenv('VERSION'),
             TRAEFIK_VERSION=os.getenv('TRAEFIK_VERSION'),
             COMPOSE_PROJECT_NAME=os.getenv('COMPOSE_PROJECT_NAME'),
             DEPLOYMENT_TARGET=os.getenv('DEPLOYMENT_TARGET'),
@@ -65,7 +63,7 @@ class Constants:
             ADDONS_FOLDER=os.getenv('ODOO_ADDONS') if os.getenv('ODOO_ADDONS') != './addons' else os.path.join(project_base_dir, 'addons'),
             TRAEFIK_BASE_DIR=os.path.dirname(project_base_dir),
             ENV_FILE=os.path.join(project_base_dir, ".env"),
-            DOCKERFILE_FILE=os.path.join(project_base_dir, "odoo.Dockerfile"),
+            DOCKERFILE_FILE=os.path.join(project_base_dir, "Dockerfile"),
             CACHE_FOLDER=os.path.join(project_base_dir, "cache"),
             CACHE_CONFIG_FILE=os.path.join(project_base_dir, "cache", "config_cache.json"),
             CACHE_ADDONS_FILE=os.path.join(project_base_dir, "cache", "addons_cache.json")

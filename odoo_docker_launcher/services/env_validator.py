@@ -1,4 +1,5 @@
 import os
+import socket
 import subprocess
 from dataclasses import fields
 
@@ -59,49 +60,7 @@ def env_verify(constants: Constants) -> None:
             constants.logger.print_error(f"The addons path: {constants.ADDONS_FOLDER} does not exist")
             exit(1)
 
-        # Verify port
-        port = int(constants.ODOO_EXPOSED_PORT)
-        containers = get_containers_using_port(constants.logger, port)
-
-        if containers:
-            # Verificar si el contenedor que usa el puerto es parte del proyecto actual
-            current_project = constants.COMPOSE_PROJECT_NAME
-            for container in containers:
-                if not container['name'].startswith(current_project):
-                    constants.logger.print_error(
-                        f"The port: {port} is occupied by other container: {container['name']}")
-                    exit(1)
-
         constants.logger.print_success("Environment variables verified successfully")
 
     except ValueError:
         constants.logger.print_error(f"Port {constants.ODOO_EXPOSED_PORT} must be a number")
-
-
-def get_containers_using_port(logger: CustomLogger, port):
-    try:
-        # List every container running
-        result = subprocess.run([
-            'docker', 'ps', '--format', '{{.Names}}\t{{.Ports}}'
-        ], capture_output=True, text=True, check=True)
-
-        using_port = []
-        for line in result.stdout.strip().split('\n'):
-            if line:
-                name, ports = line.split('\t')
-                if f":{port}->" in ports or f"0.0.0.0:{port}" in ports:
-                    using_port.append({
-                        'name': name,
-                        'ports': ports
-                    })
-
-        return using_port
-
-    except subprocess.CalledProcessError as e:
-        logger.print_error(f"Error al verificar los puertos: {e}")
-        if e.stderr:
-            logger.print_error(f"Detalles del error: {e.stderr}")
-        exit(1)
-    except Exception as e:
-        logger.print_error(f"Error al verificar los puertos: {e}")
-        exit(1)

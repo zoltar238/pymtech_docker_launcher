@@ -37,16 +37,13 @@ def stop_running_containers(constants: Constants) -> None:
 def build_docker_images(constants: Constants) -> None:
     constants.logger.print_header("APPLYING CONFIGURATION CHANGES")
     try:
-        # Necessary files
-        label_file = f"labels/labels-{constants.DEPLOYMENT_TARGET}.yml"
-
         changes_found, cached_config_json = check_config_changes(constants)
 
         # Build images only if environment variables have been modified
         if changes_found or constants.FORCE_REBUILD == "true":
             constants.logger.print_status("Detected changes in environment variables, building images")
             subprocess.run(
-                f"docker compose -f docker-compose.yml -f {label_file} build",
+                f"docker compose -f docker-compose.yml build",
                 shell=True,
                 check=True,
                 capture_output=True,
@@ -68,7 +65,7 @@ def launch_database_only(constants: Constants) -> None:
     constants.logger.print_status("Launching database")
     try:
         subprocess.run(
-            f"docker compose up -d db",
+            f"docker compose up -d db --build",
             shell=True,
             check=True,
             capture_output=True,
@@ -133,10 +130,9 @@ def launch_containers(constants: Constants, command: str = None) -> None:
     :return: None
     """
     try:
-        label_file = f"labels/labels-{constants.DEPLOYMENT_TARGET}.yml"
 
         # Base command
-        base_cmd = f"docker compose -f docker-compose.yml -f {label_file}"
+        base_cmd = f"docker compose -f docker-compose.yml"
         if command:
             subprocess.run(
                 f"{base_cmd} run --rm odoo {command}",
@@ -149,7 +145,7 @@ def launch_containers(constants: Constants, command: str = None) -> None:
         else:
             constants.logger.print_status("Spinning up containers")
             subprocess.run(
-                f"{base_cmd} up -d",
+                f"{base_cmd} up -d --build",
                 shell=True,
                 check=True,
                 capture_output=True,
@@ -171,7 +167,7 @@ def show_logs_on_error(constants: Constants) -> None:
     # Show docker logs
     constants.logger.print_status("Displaying Docker container logs:")
     try:
-        cmd = f"docker compose -f docker-compose.yml -f labels/labels-{constants.DEPLOYMENT_TARGET}.yml logs --tail=30"
+        cmd = f"docker compose -f docker-compose.yml logs --tail=30"
         output = subprocess.check_output(cmd, shell=True).decode()
         constants.logger.print_warning(output)
     except subprocess.CalledProcessError as e:
