@@ -37,25 +37,16 @@ def stop_running_containers(constants: Constants) -> None:
 def build_docker_images(constants: Constants) -> None:
     constants.logger.print_header("APPLYING CONFIGURATION CHANGES")
     try:
-        changes_found, cached_config_json = check_config_changes(constants)
-
-        # Build images only if environment variables have been modified
-        if changes_found or constants.FORCE_REBUILD == "true":
-            constants.logger.print_status("Detected changes in environment variables, building images")
-            subprocess.run(
-                f"docker compose -f docker-compose.yml build",
-                shell=True,
-                check=True,
-                capture_output=True,
-                text=True,
-                cwd=constants.BASE_DIR
-            )
-
-            # Save the config data in the JSON after successfully building the images
-            replace_cache_file(cached_config_json, constants.CACHE_FOLDER, constants.CACHE_CONFIG_FILE)
-            constants.logger.print_success("Container images were successfully built")
-        else:
-            constants.logger.print_success("No changes detected in environment variables, skipping image build")
+        constants.logger.print_status("Building container images")
+        subprocess.run(
+            f"docker compose build",
+            shell=True,
+            check=True,
+            capture_output=True,
+            text=True,
+            cwd=constants.BASE_DIR
+        )
+        constants.logger.print_success("Container images were successfully built")
     except subprocess.CalledProcessError as e:
         constants.logger.print_error(f"Error building docker images: {str(e)} \n {e.stderr} \n {e.stdout}")
         exit(1)
@@ -65,7 +56,7 @@ def launch_database_only(constants: Constants) -> None:
     constants.logger.print_status("Launching database")
     try:
         subprocess.run(
-            f"docker compose up -d db --build",
+            f"docker compose up -d db",
             shell=True,
             check=True,
             capture_output=True,
@@ -145,7 +136,7 @@ def launch_containers(constants: Constants, command: str = None) -> None:
         else:
             constants.logger.print_status("Spinning up containers")
             subprocess.run(
-                f"{base_cmd} up -d --build",
+                f"{base_cmd} up -d",
                 shell=True,
                 check=True,
                 capture_output=True,

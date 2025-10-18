@@ -41,8 +41,8 @@ async def async_main():
     # Configure traefik
     configure_traefik(constants)
 
-    # Build images if necessary
-    # build_docker_images(constants)
+    # Build docker images to make sure latest changes are applied
+    build_docker_images(constants)
 
     if constants.AUTO_INSTALL_MODULES == 'true' or constants.AUTO_UPDATE_MODULES == 'true':
         constants.logger.print_header("UPDATING DATABASES AND INSTALLING MODULES")
