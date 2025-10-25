@@ -3,7 +3,6 @@ import subprocess
 from typing import Any
 
 from odoo_docker_launcher.services.constants import Constants
-from odoo_docker_launcher.services.file_operations import check_config_changes, replace_cache_file
 
 
 def stop_running_containers(constants: Constants) -> None:

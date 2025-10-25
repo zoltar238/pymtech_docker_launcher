@@ -19,6 +19,7 @@ app = typer.Typer(add_completion=False,
                   help="Odoo Deploy command line tool, run without arguments nor commands to start the deployment process")
 base_dir = os.getcwd()
 
+
 async def async_main():
     start_time = time.time()
 
@@ -143,7 +144,8 @@ async def async_main():
 
     end_time = time.time() - start_time
     constants.logger.print_success(f"Total time: {end_time:.2f} seconds") \
-
+ \
+ \
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context):
     """ Launch and configure Odoo and PostgresSQL containers """

@@ -33,7 +33,6 @@ class CustomLogFormatter(logging.Formatter):
 class CustomLogger(logging.Logger):
     """Logger that uses the custom formatter"""
 
-
     def __init__(self, name: str):
         super().__init__(name)
         self.name = name

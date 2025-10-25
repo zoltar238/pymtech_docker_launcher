@@ -60,7 +60,8 @@ class Constants:
             FORCE_REBUILD=os.getenv('FORCE_REBUILD'),
             AUTO_CREATE_DATABASE=os.getenv('AUTO_CREATE_DATABASE'),
             BASE_DIR=project_base_dir,
-            ADDONS_FOLDER=os.getenv('ODOO_ADDONS') if os.getenv('ODOO_ADDONS') != './addons' else os.path.join(project_base_dir, 'addons'),
+            ADDONS_FOLDER=os.getenv('ODOO_ADDONS') if os.getenv('ODOO_ADDONS') != './addons' else os.path.join(
+                project_base_dir, 'addons'),
             TRAEFIK_BASE_DIR=os.path.dirname(project_base_dir),
             ENV_FILE=os.path.join(project_base_dir, ".env"),
             DOCKERFILE_FILE=os.path.join(project_base_dir, "Dockerfile"),

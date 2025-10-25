@@ -30,6 +30,7 @@ def copy_requirements(base_dir: str, requirements_file: str, logger: CustomLogge
             f.write("")
         logger.print_success(f"Successfully created empty requirements file")
 
+
 def check_config_changes(constants: Constants) -> Tuple[
     bool, Dict[str, str]]:
     # Get modification dates
@@ -108,6 +109,7 @@ def calculate_addon_hash(addon_path: str, logger: CustomLogger) -> str:
         # Return empty hash if no files found
         return hashlib.md5(b'').hexdigest()
 
+
 def list_updated_addons(addons_folder: str, addons_cache_file: str, logger: CustomLogger) -> Tuple[
     List[str], Dict[str, Dict[str, str]]]:
     """
@@ -134,8 +136,6 @@ def list_updated_addons(addons_folder: str, addons_cache_file: str, logger: Cust
             cached_addons = json.load(f)
     except Exception as e:
         logger.print_warning(f"Error reading addons cache file: {e}. New cache file will be created.")
-
-
 
     to_update_list = []
 

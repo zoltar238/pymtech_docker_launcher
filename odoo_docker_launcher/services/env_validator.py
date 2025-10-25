@@ -1,14 +1,10 @@
 import os
-import socket
-import subprocess
 from dataclasses import fields
 
 from .constants import Constants
-from .custom_logger import CustomLogger
 
 
 def env_verify(constants: Constants) -> None:
-
     # Determine environment mode
     mode = "Production" if constants.DEPLOYMENT_TARGET == "prod" else "Development"
     constants.logger.print_header("VERIFYING ENVIRONMENT VARIABLES")
