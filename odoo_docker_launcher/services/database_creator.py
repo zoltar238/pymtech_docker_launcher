@@ -3,8 +3,10 @@ import time
 import requests
 from playwright.async_api import async_playwright
 
-from .constants import Constants
 from .custom_logger import CustomLogger
+from ..constants import Constants
+
+logger = CustomLogger()
 
 
 async def check_service_health(constants: Constants, url: str = None) -> None:
@@ -17,7 +19,7 @@ async def check_service_health(constants: Constants, url: str = None) -> None:
     else:
         url = f"http://localhost:{constants.ODOO_EXPOSED_PORT}"
 
-    constants.logger.print_status(f"Checking odoo state on: {url}")
+    logger.print_status(f"Checking odoo state on: {url}")
 
     while attempt <= max_attempts:
         try:
@@ -25,7 +27,7 @@ async def check_service_health(constants: Constants, url: str = None) -> None:
             status = response.status_code
 
             if status == 303:
-                constants.logger.print_success(f"Odoo is working properly on: {url} (HTTP {status})")
+                logger.print_success(f"Odoo is working properly on: {url} (HTTP {status})")
                 return
         except requests.RequestException:
             pass
@@ -33,11 +35,11 @@ async def check_service_health(constants: Constants, url: str = None) -> None:
         time.sleep(wait_time)
         attempt += 1
 
-    constants.logger.print_error("Check service logs")
-    constants.logger.print_error(f"Service not available on {url} after {max_attempts * wait_time} seconds")
+    logger.print_error("Check service logs")
+    logger.print_error(f"Service not available on {url} after {max_attempts * wait_time} seconds")
 
 
-async def create_database(port: str, logger: CustomLogger) -> None:
+async def create_database(port: str) -> None:
     logger.print_status("Creating database")
     try:
         async with async_playwright() as p:

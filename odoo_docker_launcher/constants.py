@@ -4,12 +4,8 @@ from typing import Optional
 
 from dotenv import load_dotenv
 
-from odoo_docker_launcher.services.custom_logger import CustomLogger
-
-
 @dataclass
 class Constants:
-    TRAEFIK_VERSION: Optional[str]
     COMPOSE_PROJECT_NAME: Optional[str]
     DEPLOYMENT_TARGET: str
     ODOO_VERSION: Optional[str]
@@ -29,19 +25,16 @@ class Constants:
     AUTO_CREATE_DATABASE: Optional[str]
     BASE_DIR: str
     ADDONS_FOLDER: str
-    TRAEFIK_BASE_DIR: str
     ENV_FILE: str
     DOCKERFILE_FILE: str
     CACHE_FOLDER: str
     CACHE_CONFIG_FILE: str
     CACHE_ADDONS_FILE: str
-    logger: CustomLogger = CustomLogger(name="odoo_deploy")
 
     @classmethod
-    def from_env(cls, project_base_dir: str) -> 'Constants':
-        load_dotenv(f"{project_base_dir}/.env")
+    def from_env(cls, cwd: str) -> 'Constants':
+        load_dotenv(f"{cwd}/.env")
         return cls(
-            TRAEFIK_VERSION=os.getenv('TRAEFIK_VERSION'),
             COMPOSE_PROJECT_NAME=os.getenv('COMPOSE_PROJECT_NAME'),
             DEPLOYMENT_TARGET=os.getenv('DEPLOYMENT_TARGET'),
             ODOO_VERSION=os.getenv('ODOO_VERSION'),
@@ -59,13 +52,25 @@ class Constants:
             FORCE_UPDATE=os.getenv('FORCE_UPDATE'),
             FORCE_REBUILD=os.getenv('FORCE_REBUILD'),
             AUTO_CREATE_DATABASE=os.getenv('AUTO_CREATE_DATABASE'),
-            BASE_DIR=project_base_dir,
+            BASE_DIR=cwd,
             ADDONS_FOLDER=os.getenv('ODOO_ADDONS') if os.getenv('ODOO_ADDONS') != './addons' else os.path.join(
-                project_base_dir, 'addons'),
-            TRAEFIK_BASE_DIR=os.path.dirname(project_base_dir),
-            ENV_FILE=os.path.join(project_base_dir, ".env"),
-            DOCKERFILE_FILE=os.path.join(project_base_dir, "Dockerfile"),
-            CACHE_FOLDER=os.path.join(project_base_dir, "cache"),
-            CACHE_CONFIG_FILE=os.path.join(project_base_dir, "cache", "config_cache.json"),
-            CACHE_ADDONS_FILE=os.path.join(project_base_dir, "cache", "addons_cache.json")
+                cwd, 'addons'),
+            ENV_FILE=os.path.join(cwd, ".env"),
+            DOCKERFILE_FILE=os.path.join(cwd, "Dockerfile"),
+            CACHE_FOLDER=os.path.join(cwd, "cache"),
+            CACHE_CONFIG_FILE=os.path.join(cwd, "cache", "config_cache.json"),
+            CACHE_ADDONS_FILE=os.path.join(cwd, "cache", "addons_cache.json")
         )
+
+
+_instance: Optional[Constants] = None
+
+
+def get_constants(base_dir: str = None) -> Constants:
+    """Obtiene o crea la instancia de Constants"""
+    global _instance
+    if _instance is None:
+        if base_dir is None:
+            raise ValueError("base_dir must be provided on first call")
+        _instance = Constants.from_env(base_dir)
+    return _instance

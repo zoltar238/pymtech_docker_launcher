@@ -2,11 +2,23 @@ import configparser
 import os
 
 import psutil
+import typer
 
-from .custom_logger import CustomLogger
+from odoo_docker_launcher.services.custom_logger import CustomLogger
+
+app = typer.Typer(
+    no_args_is_help=True,
+    add_completion=True,
+    help="Configuration files operations"
+)
+
+base_dir = os.getcwd()
+
+logger = CustomLogger()
 
 
-def set_config(base_dir: str, logger: CustomLogger) -> None:
+@app.command()
+def auto_config() -> None:
     logger.print_header("Setting up Odoo configuration")
 
     cpu_count = os.cpu_count()
@@ -50,31 +62,46 @@ def set_config(base_dir: str, logger: CustomLogger) -> None:
         }
     }
 
-    logger.print_status("--- Calculated values for Odoo ---")
-    logger.print_status(f"workers: {config['odoo']['workers']}")
-    logger.print_status(f"max_cron_threads: {config['odoo']['max_cron_threads']}")
-    logger.print_status(f"limit_memory_soft: {config['odoo']['limit_memory_soft']}")
-    logger.print_status(f"limit_memory_hard: {config['odoo']['limit_memory_hard']}")
-    logger.print_status(f"db_maxconn: {config['odoo']['db_maxconn']}")
-
-    logger.print_status("--- Calculated values for Postgres ---")
-    logger.print_status(f"shared_buffers: {config['postgres']['shared_buffers']}")
-    logger.print_status(f"effective_cache_size: {config['postgres']['effective_cache_size']}")
-    logger.print_status(f"max_connections: {config['postgres']['max_connections']}")
-    logger.print_status(f"work_mem: {config['postgres']['work_mem']}")
-    logger.print_status(f"maintenance_work_mem: {config['postgres']['maintenance_work_mem']}")
+    # Print the calculated values
+    for key, value in config.items():
+        logger.print_status(f"--- Calculated values for {key} ---")
+        for k, v in value.items():
+            logger.print_status(f"{k}: {v}")
 
     odoo_config_file = os.path.join(base_dir, 'config', 'odoo.conf')
     postgres_config_file = os.path.join(base_dir, 'config', 'postgresql.conf')
-    update_config_files(
+    _write_config_files(
         postgres_config_file=postgres_config_file,
         odoo_config_file=odoo_config_file,
         config_dict=config,
-        logger=logger
     )
 
 
-def update_config_files(postgres_config_file: str, odoo_config_file: str, config_dict, logger: CustomLogger) -> None:
+@app.command()
+def scaffold() -> None:
+    logger.print_header("Scaffolding Odoo environment")
+
+    files = {
+        'config': ['odoo.conf', 'postgresql.conf'],
+        'addons': ['requirements.txt'],
+        'log': ['odoo-server.log'],
+        'cache': ['addons_cache.json']
+    }
+
+    for key, value in files.items():
+        os.makedirs(os.path.join(base_dir, key), exist_ok=True)
+        os.chmod(os.path.join(base_dir, key), 0o777)
+        for file in value:
+            file_path = os.path.join(base_dir, key, file)
+            if not os.path.exists(file_path):
+                with open(file_path, 'w') as f:
+                    f.write("")
+                os.chmod(file_path, 0o666)
+
+    logger.print_success("Odoo environment scaffolding complete")
+
+
+def _write_config_files(postgres_config_file: str, odoo_config_file: str, config_dict) -> None:
     try:
         logger.print_status("Writing new configuration files")
 
@@ -118,3 +145,7 @@ def update_config_files(postgres_config_file: str, odoo_config_file: str, config
         logger.print_success("Odoo and Postgres config files have been successfully written")
     except Exception as e:
         logger.print_error(f"Failed to update configuration files: {e}")
+
+
+if __name__ == "__main__":
+    app()

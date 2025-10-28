@@ -4,11 +4,12 @@ import os
 import shutil
 from typing import List, Tuple, Dict
 
-from .constants import Constants
 from .custom_logger import CustomLogger
+from ..constants import Constants
 
+logger = CustomLogger()
 
-def copy_requirements(base_dir: str, requirements_file: str, logger: CustomLogger) -> None:
+def copy_requirements(base_dir: str, requirements_file: str) -> None:
     # Destination path for the requirements file inside the docker addons folder
     destination = os.path.join(base_dir, 'addons', 'requirements.txt')
 
@@ -43,7 +44,7 @@ def check_config_changes(constants: Constants) -> Tuple[
         with open(constants.CACHE_CONFIG_FILE, "r") as f:
             cached_config_json = json.load(f)
     except Exception as e:
-        constants.logger.print_warning(f"Error reading config cache file: {e}. New cache file will be created.")
+        logger.print_warning(f"Error reading config cache file: {e}. New cache file will be created.")
         # Assign the new values to the JSON config
         cached_config_json['env_file_modified_time'] = env_file_modified_time
         cached_config_json['dockerfile_file_modified_time'] = dockerfile_file_modified_time
@@ -78,7 +79,7 @@ def replace_cache_file(cached_config_json: Dict[str, str], base_cache_dir: str, 
     json.dump(cached_config_json, open(config_cache_file, "w"))
 
 
-def calculate_addon_hash(addon_path: str, logger: CustomLogger) -> str:
+def calculate_addon_hash(addon_path: str) -> str:
     """
     Calculate MD5 hash for all files within an addon directory.
 
@@ -101,7 +102,7 @@ def calculate_addon_hash(addon_path: str, logger: CustomLogger) -> str:
                 logger.print_warning(f"Error reading file {file_path}: {e}")
                 continue
 
-    # Create combined hash from all file hashes
+    # Create a combined hash from all file hashes
     if file_hashes:
         combined = ''.join(sorted(file_hashes.values()))
         return hashlib.md5(combined.encode()).hexdigest()
@@ -110,7 +111,7 @@ def calculate_addon_hash(addon_path: str, logger: CustomLogger) -> str:
         return hashlib.md5(b'').hexdigest()
 
 
-def list_updated_addons(addons_folder: str, addons_cache_file: str, logger: CustomLogger) -> Tuple[
+def list_updated_addons(addons_folder: str, addons_cache_file: str) -> Tuple[
     List[str], Dict[str, Dict[str, str]]]:
     """
     Lists updated addons in the provided addons folder. The function checks if
@@ -121,8 +122,6 @@ def list_updated_addons(addons_folder: str, addons_cache_file: str, logger: Cust
     :type addons_folder: str
     :param addons_cache_file: The path to the file where addon metadata is cached.
     :type addons_cache_file: str
-    :param logger: Logger instance for printing messages.
-    :type logger: CustomLogger
     :return: A tuple containing a list of updated addon names and the updated cache dictionary.
     :rtype: Tuple[List[str], Dict[str, Dict[str, str]]]
     :raises Exception: If the provided addons folder does not exist.
@@ -144,7 +143,7 @@ def list_updated_addons(addons_folder: str, addons_cache_file: str, logger: Cust
 
     for addon in addon_list:
         addon_path = os.path.join(addons_folder, addon)
-        current_hash = calculate_addon_hash(addon_path, logger)
+        current_hash = calculate_addon_hash(addon_path)
 
         # Check if addon exists in the cache and compare hashes
         if addon in cached_addons:

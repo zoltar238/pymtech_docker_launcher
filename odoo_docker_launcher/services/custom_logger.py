@@ -33,7 +33,18 @@ class CustomLogFormatter(logging.Formatter):
 class CustomLogger(logging.Logger):
     """Logger that uses the custom formatter"""
 
-    def __init__(self, name: str):
+    _instance = None
+
+    def __new__(cls, name: str = "odoo_deploy"):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self, name: str = "odoo_deploy"):
+        if self._initialized:
+            return
+
         super().__init__(name)
         self.name = name
 
@@ -52,6 +63,8 @@ class CustomLogger(logging.Logger):
         console_handler.setLevel(log_level)
 
         self.logger.addHandler(console_handler)
+
+        self._initialized = True
 
     def print_header(self, message):
         """Print header"""
