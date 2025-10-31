@@ -106,7 +106,8 @@ def get_database_names(constants: Constants) -> list[Any] | None:
             for index, line in enumerate(lines):
                 if '|' in line:
                     db_name = line.split('|')[0].strip()
-                    if db_name not in ['postgres', 'template0', 'template1', 'Name'] and '=' not in db_name:
+                    if db_name not in ['template_postgis', 'postgres', 'template0', 'template1',
+                                       'Name'] and '=' not in db_name:
                         databases.append(db_name)
 
             return databases
