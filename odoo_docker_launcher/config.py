@@ -17,7 +17,7 @@ base_dir = os.getcwd()
 logger = CustomLogger()
 
 
-@app.command()
+@app.command(help="Automatically configure Odoo and Postgres for efficient resource usage")
 def auto_config() -> None:
     logger.print_header("Setting up Odoo configuration")
 
@@ -77,7 +77,7 @@ def auto_config() -> None:
     )
 
 
-@app.command()
+@app.command(help="Scaffold the Odoo environment")
 def scaffold() -> None:
     logger.print_header("Scaffolding Odoo environment")
 
@@ -96,7 +96,7 @@ def scaffold() -> None:
             if not os.path.exists(file_path):
                 with open(file_path, 'w') as f:
                     f.write("")
-                os.chmod(file_path, 0o666)
+                os.chmod(file_path, 0o777)
 
     logger.print_success("Odoo environment scaffolding complete")
 

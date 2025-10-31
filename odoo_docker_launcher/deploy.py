@@ -4,20 +4,21 @@ import time
 
 import typer
 
-from odoo_docker_launcher import config, env
+from odoo_docker_launcher import config, env, db
 from odoo_docker_launcher.config import scaffold
 from odoo_docker_launcher.constants import get_constants
+from odoo_docker_launcher.db import create_database
 from odoo_docker_launcher.env import validate
 from odoo_docker_launcher.services.containers import stop_running_containers, build_docker_images, launch_database_only, \
     get_database_names, launch_containers
 from odoo_docker_launcher.services.custom_logger import CustomLogger
-from odoo_docker_launcher.services.database_creator import check_service_health, create_database
+from odoo_docker_launcher.services.database_creator import check_service_health
 from odoo_docker_launcher.services.file_operations import copy_requirements, list_updated_addons, update_addons_cache
 from odoo_docker_launcher.services.module_manager import list_addons_in_folder, list_to_install_addons
 from odoo_docker_launcher.services.traefik import update_proxy_mode
 
 app = typer.Typer(
-    add_completion=False,
+    add_completion=True,
     help="Odoo Deploy command line tool, run without arguments nor commands to start the deployment process"
 )
 
@@ -161,6 +162,7 @@ def main(ctx: typer.Context):
 
 app.add_typer(config.app, name="config")
 app.add_typer(env.app, name="env")
+app.add_typer(db.app, name="db")
 
 
 def deploy():

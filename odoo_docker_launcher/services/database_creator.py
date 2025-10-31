@@ -37,23 +37,3 @@ async def check_service_health(constants: Constants, url: str = None) -> None:
 
     logger.print_error("Check service logs")
     logger.print_error(f"Service not available on {url} after {max_attempts * wait_time} seconds")
-
-
-async def create_database(port: str) -> None:
-    logger.print_status("Creating database")
-    try:
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
-            page = await browser.new_page()
-            await page.goto(f"http://localhost:{port}")
-            await page.fill("input[name=\"master_pwd\"]", "master")
-            await page.fill("input[name=\"name\"]", "master")
-            await page.fill("input[name=\"login\"]", "master")
-            await page.fill("input[name=\"password\"]", "master")
-            await page.select_option('#lang', 'es_ES')
-            await page.select_option('#country', 'es')
-            await page.click("text=Create database")
-
-        logger.print_success("Database created successfully")
-    except Exception as e:
-        logger.print_error(f"Failed to create database: {e}")
