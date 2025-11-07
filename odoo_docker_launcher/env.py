@@ -57,7 +57,7 @@ def validate():
 
     try:
         # Odoo version must be correct
-        if constants.ODOO_VERSION not in ['16', '17', '18', 'latest']:
+        if constants.ODOO_VERSION not in ['16', '17', '18', '19', 'latest']:
             logger.print_error(
                 f"La versión de Odoo: {constants.ODOO_VERSION} no es válida. Debe ser 16, 17 o 18")
             exit(1)
