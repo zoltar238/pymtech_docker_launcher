@@ -89,14 +89,28 @@ def scaffold() -> None:
     }
 
     for key, value in files.items():
-        os.makedirs(os.path.join(base_dir, key), exist_ok=True)
-        os.chmod(os.path.join(base_dir, key), 0o777)
+        dir_path = os.path.join(base_dir, key)
+        dir_existed = os.path.exists(dir_path)
+        os.makedirs(dir_path, exist_ok=True)
+
+        # Only set permissions if the directory didn't exist before'
+        if not dir_existed:
+            try:
+                os.chmod(dir_path, 0o755)
+            except PermissionError:
+                pass
+
+        # Create empty files if they don't exist with the correct permissions
         for file in value:
             file_path = os.path.join(base_dir, key, file)
             if not os.path.exists(file_path):
                 with open(file_path, 'w') as f:
                     f.write("")
-                os.chmod(file_path, 0o777)
+                try:
+                    os.chmod(file_path, 0o644)
+                except PermissionError:
+                    pass
+
 
     logger.print_success("Odoo environment scaffolding complete")
 
