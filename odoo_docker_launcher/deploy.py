@@ -53,7 +53,7 @@ async def async_main():
     # Build docker images to make sure the latest changes are applied
     build_docker_images(constants)
 
-    if constants.AUTO_INSTALL_MODULES == 'true' or constants.AUTO_UPDATE_MODULES == 'true':
+    if constants.AUTO_INSTALL_MODULES or constants.AUTO_UPDATE_MODULES:
         logger.print_header("UPDATING DATABASES AND INSTALLING MODULES")
         launch_database_only(constants)
 
@@ -64,7 +64,7 @@ async def async_main():
             # Launch containers without updating nor installing modules
             launch_containers(constants)
             # After launching containers, create a new database if necessary
-            if constants.DEPLOYMENT_TARGET == 'dev' and constants.AUTO_CREATE_DATABASE == 'true':
+            if constants.DEPLOYMENT_TARGET == 'dev' and constants.AUTO_CREATE_DATABASE:
                 # Wait for the database to be ready
                 await check_service_health(constants)
                 # Create the new database
@@ -101,19 +101,19 @@ async def async_main():
                 update_addons_string = ','.join(update_addons_list)
 
             # Force update option
-            force_update = '--dev=all' if constants.FORCE_UPDATE == 'true' else ''
+            force_update = '--dev=all' if constants.FORCE_UPDATE else ''
 
             # Update and install modules
             for index, db in enumerate(database_list):
                 # Install modules if the option is enabled, and the list of addons to be installed is not empty
                 install_addons_string = list_to_install_addons(constants, addons_list, db)
-                if constants.AUTO_INSTALL_MODULES == "true" and install_addons_string:
+                if constants.AUTO_INSTALL_MODULES and install_addons_string:
                     logger.print_status(f"Installing modules on database {db}")
                     cmd = f"odoo -d {db} -i {install_addons_string} --stop-after-init"
                     launch_containers(constants, cmd)
                     logger.print_success(f"Installing modules on database {db} completed")
                 # Update modules
-                if constants.AUTO_UPDATE_MODULES == "true" and update_addons_list:
+                if constants.AUTO_UPDATE_MODULES and update_addons_list:
                     logger.print_status(f"Updating modules on database {db}")
                     cmd = f"odoo -d {db} -u {update_addons_string} {force_update} --stop-after-init"
                     launch_containers(constants, cmd)
@@ -131,7 +131,7 @@ async def async_main():
         launch_containers(constants)
 
         # Create a new database if necessary
-        if constants.DEPLOYMENT_TARGET == 'dev' and constants.AUTO_CREATE_DATABASE == 'true':
+        if constants.DEPLOYMENT_TARGET == 'dev' and constants.AUTO_CREATE_DATABASE:
             # Get all database names
             database_list = get_database_names(constants)
             if not database_list:

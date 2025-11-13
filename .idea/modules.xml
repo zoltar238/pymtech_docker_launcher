@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../dv-odoo-docker/.idea/dv-odoo-docker.iml" filepath="$PROJECT_DIR$/../dv-odoo-docker/.idea/dv-odoo-docker.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/pymtech_docker_launcher.iml" filepath="$PROJECT_DIR$/.idea/pymtech_docker_launcher.iml" />
     </modules>
   </component>

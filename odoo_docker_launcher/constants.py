@@ -4,6 +4,7 @@ from typing import Optional
 
 from dotenv import load_dotenv
 
+
 @dataclass
 class Constants:
     COMPOSE_PROJECT_NAME: Optional[str]
@@ -16,13 +17,12 @@ class Constants:
     ODOO_CONFIG: Optional[str]
     ODOO_ADDONS: Optional[str]
     DOMAIN: Optional[str]
-    OPTIONAL_WHISPER: Optional[str]
-    AUTO_INSTALL_MODULES: Optional[str]
-    AUTO_UPDATE_MODULES: Optional[str]
+    OPTIONAL_WHISPER: bool
+    AUTO_INSTALL_MODULES: bool
+    AUTO_UPDATE_MODULES: bool
     UPDATE_MODULE_LIST: Optional[str]
-    FORCE_UPDATE: Optional[str]
-    FORCE_REBUILD: Optional[str]
-    AUTO_CREATE_DATABASE: Optional[str]
+    FORCE_UPDATE: bool
+    AUTO_CREATE_DATABASE: bool
     BASE_DIR: str
     ADDONS_FOLDER: str
     ENV_FILE: str
@@ -45,13 +45,12 @@ class Constants:
             ODOO_CONFIG=os.getenv('ODOO_CONFIG'),
             ODOO_ADDONS=os.getenv('ODOO_ADDONS'),
             DOMAIN=os.getenv('DOMAIN'),
-            OPTIONAL_WHISPER=os.getenv('OPTIONAL_WHISPER'),
-            AUTO_INSTALL_MODULES=os.getenv('AUTO_INSTALL_MODULES'),
-            AUTO_UPDATE_MODULES=os.getenv('AUTO_UPDATE_MODULES'),
+            OPTIONAL_WHISPER=True if (os.getenv('OPTIONAL_WHISPER') == 'True' or os.getenv('OPTIONAL_WHISPER') == 'true') else False,
+            AUTO_INSTALL_MODULES=True if (os.getenv('AUTO_INSTALL_MODULES') == 'True' or os.getenv('AUTO_INSTALL_MODULES') == 'true') else False,
+            AUTO_UPDATE_MODULES=True if (os.getenv('AUTO_UPDATE_MODULES') == 'True' or os.getenv('AUTO_UPDATE_MODULES') == 'true') else False,
             UPDATE_MODULE_LIST=os.getenv('UPDATE_MODULE_LIST'),
-            FORCE_UPDATE=os.getenv('FORCE_UPDATE'),
-            FORCE_REBUILD=os.getenv('FORCE_REBUILD'),
-            AUTO_CREATE_DATABASE=os.getenv('AUTO_CREATE_DATABASE'),
+            FORCE_UPDATE=True if (os.getenv('FORCE_UPDATE') == 'True' or os.getenv('FORCE_UPDATE') == 'true') else False,
+            AUTO_CREATE_DATABASE=True if (os.getenv('AUTO_CREATE_DATABASE') == 'True' or os.getenv('AUTO_CREATE_DATABASE') == 'true') else False,
             BASE_DIR=cwd,
             ADDONS_FOLDER=os.getenv('ODOO_ADDONS') if os.getenv('ODOO_ADDONS') != './addons' else os.path.join(
                 cwd, 'addons'),
