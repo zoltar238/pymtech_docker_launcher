@@ -42,7 +42,6 @@ def validate():
     logger.print_status(f"Force update modules: {constants.FORCE_UPDATE}")
     logger.print_status(f"Update module list: {constants.UPDATE_MODULE_LIST}")
     logger.print_status("--- Build & Development ---")
-    logger.print_status(f"Rebuild images: {constants.FORCE_REBUILD}")
     logger.print_status("--- Optional Features ---")
     logger.print_status(f"Install wisper for voice recognition: {constants.OPTIONAL_WHISPER}")
 
