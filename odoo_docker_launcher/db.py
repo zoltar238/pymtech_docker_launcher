@@ -14,9 +14,11 @@ app = typer.Typer(
 
 logger = CustomLogger()
 
+
 @app.command(help="Create Odoo database")
 def create(port: str = "8069"):
     asyncio.run(create_database(port))
+
 
 async def create_database(port: str) -> None:
     logger.print_status("Creating database")
@@ -60,6 +62,7 @@ def _check_playwright():
         logger.print_success("Playwright installed successfully")
     except subprocess.CalledProcessError as e:
         logger.print_error(f"Failed to install Playwright: {e}")
+
 
 if __name__ == "__main__":
     app()

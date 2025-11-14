@@ -84,7 +84,6 @@ def scaffold() -> None:
     files = {
         'config': ['odoo.conf', 'postgresql.conf'],
         'addons': ['requirements.txt'],
-        'log': ['odoo-server.log'],
         'cache': ['addons_cache.json']
     }
 
@@ -110,7 +109,6 @@ def scaffold() -> None:
                     os.chmod(file_path, 0o644)
                 except PermissionError:
                     pass
-
 
     logger.print_success("Odoo environment scaffolding complete")
 

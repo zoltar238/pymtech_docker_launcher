@@ -1,7 +1,6 @@
 import time
 
 import requests
-from playwright.async_api import async_playwright
 
 from .custom_logger import CustomLogger
 from ..constants import Constants

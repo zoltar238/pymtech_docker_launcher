@@ -1,4 +1,3 @@
-import os
 import subprocess
 from typing import Any
 
@@ -166,15 +165,3 @@ def show_logs_on_error(constants: Constants) -> None:
         logger.print_warning(output)
     except subprocess.CalledProcessError as e:
         logger.print_error(f"Error getting Docker logs: {str(e)}")
-
-    print()
-
-    # Odoo logs
-    odoo_logs_path = f"{constants.BASE_DIR}/log/odoo-server.log"
-    if os.path.exists(odoo_logs_path):
-        logger.print_status("Displaying Odoo server logs:")
-        with open(odoo_logs_path, "r", encoding="UTF-8") as f:
-            lines = f.readlines()[-50:]
-            logger.print_warning("".join(lines))
-    else:
-        logger.print_warning(f"Odoo log file not found at path: {odoo_logs_path}")

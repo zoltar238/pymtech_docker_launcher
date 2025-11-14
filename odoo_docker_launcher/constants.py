@@ -45,12 +45,17 @@ class Constants:
             ODOO_CONFIG=os.getenv('ODOO_CONFIG'),
             ODOO_ADDONS=os.getenv('ODOO_ADDONS'),
             DOMAIN=os.getenv('DOMAIN'),
-            OPTIONAL_WHISPER=True if (os.getenv('OPTIONAL_WHISPER') == 'True' or os.getenv('OPTIONAL_WHISPER') == 'true') else False,
-            AUTO_INSTALL_MODULES=True if (os.getenv('AUTO_INSTALL_MODULES') == 'True' or os.getenv('AUTO_INSTALL_MODULES') == 'true') else False,
-            AUTO_UPDATE_MODULES=True if (os.getenv('AUTO_UPDATE_MODULES') == 'True' or os.getenv('AUTO_UPDATE_MODULES') == 'true') else False,
+            OPTIONAL_WHISPER=True if (
+                        os.getenv('OPTIONAL_WHISPER') == 'True' or os.getenv('OPTIONAL_WHISPER') == 'true') else False,
+            AUTO_INSTALL_MODULES=True if (os.getenv('AUTO_INSTALL_MODULES') == 'True' or os.getenv(
+                'AUTO_INSTALL_MODULES') == 'true') else False,
+            AUTO_UPDATE_MODULES=True if (os.getenv('AUTO_UPDATE_MODULES') == 'True' or os.getenv(
+                'AUTO_UPDATE_MODULES') == 'true') else False,
             UPDATE_MODULE_LIST=os.getenv('UPDATE_MODULE_LIST'),
-            FORCE_UPDATE=True if (os.getenv('FORCE_UPDATE') == 'True' or os.getenv('FORCE_UPDATE') == 'true') else False,
-            AUTO_CREATE_DATABASE=True if (os.getenv('AUTO_CREATE_DATABASE') == 'True' or os.getenv('AUTO_CREATE_DATABASE') == 'true') else False,
+            FORCE_UPDATE=True if (
+                        os.getenv('FORCE_UPDATE') == 'True' or os.getenv('FORCE_UPDATE') == 'true') else False,
+            AUTO_CREATE_DATABASE=True if (os.getenv('AUTO_CREATE_DATABASE') == 'True' or os.getenv(
+                'AUTO_CREATE_DATABASE') == 'true') else False,
             BASE_DIR=cwd,
             ADDONS_FOLDER=os.getenv('ODOO_ADDONS') if os.getenv('ODOO_ADDONS') != './addons' else os.path.join(
                 cwd, 'addons'),

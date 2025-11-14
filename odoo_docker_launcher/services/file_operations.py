@@ -9,6 +9,7 @@ from ..constants import Constants
 
 logger = CustomLogger()
 
+
 def copy_requirements(base_dir: str, requirements_file: str) -> None:
     # Destination path for the requirements file inside the docker addons folder
     destination = os.path.join(base_dir, 'addons', 'requirements.txt')
